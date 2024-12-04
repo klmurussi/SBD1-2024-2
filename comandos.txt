@@ -1,0 +1,586 @@
+PRAGMA foreign_keys = ON;
+
+-- Tabela Pessoa
+CREATE TABLE Pessoa (
+    CPF TEXT PRIMARY KEY,
+    Nome TEXT NOT NULL,
+    Celular INTEGER NOT NULL UNIQUE
+);
+
+
+-- Tabela Convidado
+CREATE TABLE Convidado (
+    CPF TEXT PRIMARY KEY,
+    Email TEXT NOT NULL UNIQUE,
+    FOREIGN KEY (CPF) REFERENCES Pessoa(CPF)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE
+);
+
+
+-- Tabela Membro
+CREATE TABLE Membro (
+    CPF TEXT PRIMARY KEY,
+    Data_de_Cadastro DATE NOT NULL,
+  	Plano INTEGER NOT NULL,
+    CPF_Convidante TEXT UNIQUE,
+    FOREIGN KEY (CPF) REFERENCES Pessoa(CPF)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE,
+  	FOREIGN KEY (CPF_Convidante) REFERENCES Membro(CPF)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE
+);
+
+-- Tabela Estação de Trabalho
+CREATE TABLE Estacao_de_Trabalho (
+  	ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+  	Capacidade INTEGER NOT NULL, 
+  	Local TEXT NOT NULL
+);
+
+-- Tabela Equipamento
+CREATE TABLE Equipamento (
+  	Patrimonio INTEGER PRIMARY KEY,
+  	Tipo TEXT NOT NULL,
+  	Durabilidade TEXT NOT NULL,
+  	ID_estacao INTEGER,
+  	FOREIGN KEY (ID_estacao) REFERENCES Estacao_de_Trabalho(ID)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE
+);
+
+-- Tabela Munutenção
+CREATE TABLE Manutencao (
+  	Patrimonio INTEGER PRIMARY KEY,
+  	Data DATE NOT NULL,
+  	FOREIGN KEY (Patrimonio) REFERENCES Equipamento(Patrimonio)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE
+);
+
+-- Tabela Evento
+CREATE TABLE Evento (
+  	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+  	Tema TEXT NOT NULL
+ );
+ 
+ -- Tabela Pessoa_Evento
+ Create TABLE Pessoa_Evento (
+   	CPF_pessoa TEXT NOT NULL,
+   	ID_evento INTEGER NOT NULL,
+   	PRIMARY KEY (CPF_pessoa, ID_evento),
+   	FOREIGN KEY (CPF_pessoa) REFERENCES Pessoa(CPF)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE,
+    FOREIGN KEY (ID_evento) REFERENCES Evento(ID)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE
+);
+
+-- Tabela Reserva
+CREATE TABLE Reserva (
+  	ID_evento INTEGER NOT NULL,
+  	ID_estacao INTEGER NOT NULL,
+  	CPF TEXT NOT NULL,
+   	Data DATE NOT NULL,
+  	Pagamento INTEGER NOT NULL,
+  	PRIMARY KEY (ID_evento, ID_estacao),
+    FOREIGN KEY (ID_evento) REFERENCES Evento(ID)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE,
+  	FOREIGN KEY (ID_estacao) REFERENCES Estação_de_Trabalho(ID)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE,
+    FOREIGN KEY (CPF) REFERENCES Membro(CPF)
+  		ON DELETE RESTRICT
+  		ON UPDATE CASCADE
+  );
+
+-- Tabela Pessoa
+INSERT INTO Pessoa (CPF, Nome, Celular) VALUES
+    ('001', 'João Silva', '11987654321'),
+    ('002', 'Maria Oliveira', '11976543210'),
+    ('003', 'Pedro Souza', '11965432109'),
+    ('004', 'Ana Costa', '11954321098'),
+    ('005', 'Carlos Santos', '11943210987'),
+    ('006', 'Fernanda Pereira', '11932109876'),
+    ('007', 'Lucas Almeida', '11921098765'),
+    ('008', 'Patricia Rocha', '11910987654'),
+    ('009', 'Ricardo Lima', '11909876543'),
+    ('010', 'Juliana Ferreira', '11908765432'),
+    ('011', 'Marcos Oliveira', '11907654321'),
+    ('012', 'Renata Costa', '11906543210'),
+    ('013', 'Eduardo Santos', '11905432109'),
+    ('014', 'Camila Pereira', '11904321098'),
+    ('015', 'Felipe Almeida', '11903210987'),
+    ('016', 'Juliana Rocha', '11902109876'),
+    ('017', 'Bruna Lima', '11901098765'),
+    ('018', 'Ricardo Ferreira', '11899987654'),
+    ('019', 'Thiago Santos', '11898876543'),
+    ('020', 'Larissa Souza', '11897765432'),
+    ('021', 'Gabriel Costa', '11896654321'),
+    ('022', 'Tatiane Pereira', '11895543210'),
+    ('023', 'Vinícius Almeida', '11894432109'),
+    ('024', 'Letícia Rocha', '11893321098'),
+    ('025', 'Gustavo Lima', '11892210987'),
+    ('026', 'Amanda Ferreira', '11891109876'),
+    ('027', 'Rafael Silva', '11890098765'),
+    ('028', 'Carla Oliveira', '11888987654'),
+    ('029', 'Daniel Santos', '11887876543'),
+    ('030', 'Adriana Souza', '11886765432'),
+    ('031', 'Felipe Costa', '11885654321'),
+    ('032', 'Mariana Pereira', '11884543210'),
+    ('033', 'Ricardo Almeida', '11883432109'),
+    ('034', 'Larissa Rocha', '11882321098'),
+    ('035', 'Victor Lima', '11881210987'),
+    ('036', 'Tatiane Ferreira', '11880109876'),
+    ('037', 'Joana Silva', '11879098765'),
+    ('038', 'Gustavo Oliveira', '11877987654'),
+    ('039', 'Sérgio Santos', '11876876543'),
+    ('040', 'Lúcia Souza', '11875765432'),
+    ('041', 'Renato Costa', '11874654321'),
+    ('042', 'Tatiane Almeida', '11873543210'),
+    ('043', 'Alexandre Rocha', '11872432109'),
+    ('044', 'Carla Lima', '11871321098'),
+    ('045', 'Leandro Ferreira', '11870210987'),
+    ('046', 'Felipe Silva', '11869109876'),
+    ('047', 'Patricia Oliveira', '11868098765'),
+    ('048', 'Tiago Santos', '11866987654'),
+    ('049', 'Caroline Souza', '11865876543'),
+    ('050', 'Marcelo Costa', '11864765432');
+
+-- Tabela Convidado
+INSERT INTO Convidado (CPF, Email) VALUES
+    ('021', 'gabriel21@email.com'),
+    ('022', 'tatiane22@email.com'),
+    ('023', 'vinicius23@email.com'),
+    ('024', 'leticia24@email.com'),
+    ('025', 'gustavo25@email.com'),
+    ('026', 'amanda26@email.com'),
+    ('027', 'rafael27@email.com'),
+    ('028', 'carla28@email.com'),
+    ('029', 'daniel29@email.com'),
+    ('030', 'adriana30@email.com'),
+    ('031', 'felipe31@email.com'),
+    ('032', 'mariana32@email.com'),
+    ('033', 'ricardo33@email.com'),
+    ('034', 'larissa34@email.com'),
+    ('035', 'victor35@email.com'),
+    ('036', 'tatiane36@email.com'),
+    ('037', 'joana37@email.com'),
+    ('038', 'gustavo38@email.com'),
+    ('039', 'sergio39@email.com'),
+    ('040', 'lucia40@email.com'),
+    ('041', 'renato41@email.com'),
+    ('042', 'tatiane42@email.com'),
+    ('043', 'alexandre43@email.com'),
+    ('044', 'carla44@email.com'),
+    ('045', 'leandro45@email.com'),
+    ('046', 'felipe46@email.com'),
+    ('047', 'patricia47@email.com'),
+    ('048', 'tiago48@email.com'),
+    ('049', 'caroline49@email.com'),
+    ('050', 'marcelo50@email.com');
+
+-- Tabela Membro
+INSERT INTO Membro (CPF, Data_de_Cadastro, Plano, CPF_Convidante) VALUES
+    ('001', '2024-01-01', 1, NULL),
+    ('002', '2024-01-02', 1, '001'),
+    ('003', '2024-02-01', 1, '002'),
+    ('004', '2024-02-02', 1, '003'),
+    ('005', '2024-03-01', 1, '004'),
+    ('006', '2024-03-02', 1, '005'),
+    ('007', '2024-04-01', 1, '006'),
+    ('008', '2024-04-02', 1, '007'),
+    ('009', '2024-05-01', 1, '008'),
+    ('010', '2024-06-01', 2, '009'),
+    ('011', '2024-06-02', 2, '010'),
+    ('012', '2024-07-01', 2, '011'),
+    ('013', '2024-07-02', 2, '012'),
+    ('014', '2024-08-01', 2, '013'),
+    ('015', '2024-08-02', 2, '014'),
+    ('016', '2024-09-01', 2, '015'),
+    ('017', '2024-09-02', 2, '016'),
+    ('018', '2024-10-01', 2, '017'),
+    ('019', '2024-10-02', 2, '018'),
+    ('020', '2024-11-02', 2, '019');
+
+
+-- Tabela Estação de Trabalho
+INSERT INTO Estacao_de_Trabalho (Capacidade, Local) VALUES
+    (15, 'Sala 101'),
+    (16, 'Sala 102'),
+    (17, 'Sala 103'),
+    (18, 'Sala 104'),
+    (19, 'Sala 105'),
+    (20, 'Sala 106'),
+    (21, 'Sala 107'),
+    (22, 'Sala 108'),
+    (23, 'Sala 109'),
+    (24, 'Sala 110'),
+    (25, 'Sala 111'),
+    (15, 'Sala 112'),
+    (16, 'Sala 113'),
+    (17, 'Sala 114'),
+    (18, 'Sala 115'),
+    (19, 'Sala 116'),
+    (20, 'Sala 117'),
+    (21, 'Sala 118'),
+    (22, 'Sala 119'),
+    (23, 'Sala 120');
+
+-- Tabela Equipamento
+INSERT INTO Equipamento (Patrimonio, Tipo, Durabilidade, ID_estacao) VALUES
+    (101, 'Computador', '5 anos', 1),
+    (102, 'Impressora', '3 anos', 1),
+    (103, 'Monitor', '4 anos', 1),
+    
+    (104, 'Computador', '5 anos', 2),
+    (105, 'Impressora', '3 anos', 2),
+    (106, 'Scanner', '4 anos', 2),
+    
+    (107, 'Computador', '5 anos', 3),
+    (108, 'Impressora', '3 anos', 3),
+    (109, 'Monitor', '4 anos', 3),
+    
+    (110, 'Computador', '5 anos', 4),
+    (111, 'Impressora', '3 anos', 4),
+    (112, 'Scanner', '4 anos', 4),
+    
+    (113, 'Computador', '5 anos', 5),
+    (114, 'Impressora', '3 anos', 5),
+    (115, 'Monitor', '4 anos', 5),
+    
+    (116, 'Computador', '5 anos', 6),
+    (117, 'Impressora', '3 anos', 6),
+    (118, 'Scanner', '4 anos', 6),
+    
+    (119, 'Computador', '5 anos', 7),
+    (120, 'Impressora', '3 anos', 7),
+    (121, 'Monitor', '4 anos', 7),
+    
+    (122, 'Computador', '5 anos', 8),
+    (123, 'Impressora', '3 anos', 8),
+    (124, 'Scanner', '4 anos', 8),
+    
+    (125, 'Computador', '5 anos', 9),
+    (126, 'Impressora', '3 anos', 9),
+    (127, 'Monitor', '4 anos', 9),
+    
+    (128, 'Computador', '5 anos', 10),
+    (129, 'Impressora', '3 anos', 10),
+    (130, 'Scanner', '4 anos', 10),
+    
+    (131, 'Computador', '5 anos', 11),
+    (132, 'Impressora', '3 anos', 11),
+    (133, 'Monitor', '4 anos', 11),
+    
+    (134, 'Computador', '5 anos', 12),
+    (135, 'Impressora', '3 anos', 12),
+    (136, 'Scanner', '4 anos', 12),
+    
+    (137, 'Computador', '5 anos', 13),
+    (138, 'Impressora', '3 anos', 13),
+    (139, 'Monitor', '4 anos', 13),
+    
+    (140, 'Computador', '5 anos', 14),
+    (141, 'Impressora', '3 anos', 14),
+    (142, 'Scanner', '4 anos', 14),
+    
+    (143, 'Computador', '5 anos', 15),
+    (144, 'Impressora', '3 anos', 15),
+    (145, 'Monitor', '4 anos', 15),
+    
+    (146, 'Computador', '5 anos', 16),
+    (147, 'Impressora', '3 anos', 16),
+    (148, 'Scanner', '4 anos', 16),
+    
+    (149, 'Computador', '5 anos', 17),
+    (150, 'Impressora', '3 anos', 17),
+    (151, 'Monitor', '4 anos', 17),
+    
+    (152, 'Computador', '5 anos', 18),
+    (153, 'Impressora', '3 anos', 18),
+    (154, 'Scanner', '4 anos', 18),
+    
+    (155, 'Computador', '5 anos', 19),
+    (156, 'Impressora', '3 anos', 19),
+    (157, 'Monitor', '4 anos', 19),
+    
+    (158, 'Computador', '5 anos', 20),
+    (159, 'Impressora', '3 anos', 20),
+    (160, 'Scanner', '4 anos', 20);
+
+
+-- Tabela Munutenção
+INSERT INTO Manutencao (Patrimonio, Data) VALUES
+    (101, '2024-11-01'),
+    (102, '2024-11-02'),
+    (103, '2024-11-03'),
+    
+    (104, '2024-11-04'),
+    (105, '2024-11-05'),
+    (106, '2024-11-06'),
+    
+    (107, '2024-11-07'),
+    (108, '2024-11-08'),
+    (109, '2024-11-09'),
+    
+    (110, '2024-11-10'),
+    (111, '2024-11-11'),
+    (112, '2024-11-12'),
+    
+    (113, '2024-11-13'),
+    (114, '2024-11-14'),
+    (115, '2024-11-15'),
+    
+    (116, '2024-11-16'),
+    (117, '2024-11-17'),
+    (118, '2024-11-18'),
+    
+    (119, '2024-11-19'),
+    (120, '2024-11-20'),
+    (121, '2024-11-21'),
+    
+    (122, '2024-11-22'),
+    (123, '2024-11-23'),
+    (124, '2024-11-24'),
+    
+    (125, '2024-11-25'),
+    (126, '2024-11-26'),
+    (127, '2024-11-27'),
+    
+    (128, '2024-11-28'),
+    (129, '2024-11-29'),
+    (130, '2024-11-30'),
+    
+    (131, '2024-12-01'),
+    (132, '2024-12-02'),
+    (133, '2024-12-03'),
+    
+    (134, '2024-12-04'),
+    (135, '2024-12-05'),
+    (136, '2024-12-06'),
+    
+    (137, '2024-12-07'),
+    (138, '2024-12-08'),
+    (139, '2024-12-09'),
+    
+    (140, '2024-12-10'),
+    (141, '2024-12-11'),
+    (142, '2024-12-12'),
+    
+    (143, '2024-12-13'),
+    (144, '2024-12-14'),
+    (145, '2024-12-15'),
+    
+    (146, '2024-12-16'),
+    (147, '2024-12-17'),
+    (148, '2024-12-18'),
+    
+    (149, '2024-12-19'),
+    (150, '2024-12-20'),
+    (151, '2024-12-21'),
+    
+    (152, '2024-12-22'),
+    (153, '2024-12-23'),
+    (154, '2024-12-24'),
+    
+    (155, '2024-12-25'),
+    (156, '2024-12-26'),
+    (157, '2024-12-27'),
+    
+    (158, '2024-12-28'),
+    (159, '2024-12-29'),
+    (160, '2024-12-30');
+
+
+-- Tabela Evento
+INSERT INTO Evento (Tema) VALUES
+    ('Congresso de Tecnologia'),
+    ('Seminário de Marketing Digital'),
+    ('Workshop de Gestão de Projetos'),
+    ('Fórum de Inovação em Saúde'),
+    ('Encontro de Liderança Empresarial'),
+    ('Conferência de Sustentabilidade Ambiental'),
+    ('Palestra sobre Empreendedorismo'),
+    ('Evento de Networking Corporativo'),
+    ('Exposição de Design e Inovação'),
+    ('Fórum de Inteligência Artificial'),
+    ('Seminário sobre Economia Global'),
+    ('Workshop de Programação e Desenvolvimento'),
+    ('Palestra sobre Mindfulness e Produtividade'),
+    ('Conferência Internacional de Vendas'),
+    ('Encontro de Profissionais de TI'),
+    ('Evento de Responsabilidade Social Corporativa'),
+    ('Fórum de Educação e Inovação'),
+    ('Seminário sobre Marketing de Influência'),
+    ('Encontro de Profissionais de Recursos Humanos'),
+    ('Workshop de Comunicação e Liderança');
+
+ 
+ -- Tabela Pessoa_Evento
+INSERT INTO Pessoa_Evento (CPF_pessoa, ID_evento) VALUES
+    -- Evento 1: Congresso de Tecnologia
+    ('001', 1), ('002', 1), ('003', 1), ('004', 1), ('005', 1), ('006', 1),
+    ('007', 1), ('008', 1), ('009', 1), ('010', 1), ('011', 1), ('012', 1),
+    ('013', 1), ('014', 1), ('015', 1), ('016', 1),
+    
+    -- Evento 2: Seminário de Marketing Digital
+    ('017', 2), ('018', 2), ('019', 2), ('020', 2), ('021', 2), ('022', 2),
+    ('023', 2), ('024', 2), ('025', 2), ('026', 2), ('027', 2), ('028', 2),
+    ('029', 2), ('030', 2), ('031', 2), ('032', 2),
+    
+    -- Evento 3: Workshop de Gestão de Projetos
+    ('033', 3), ('034', 3), ('035', 3), ('036', 3), ('037', 3), ('038', 3),
+    ('039', 3), ('040', 3), ('041', 3), ('042', 3), ('043', 3), ('044', 3),
+    ('045', 3), ('046', 3), ('047', 3), ('048', 3),
+    
+    -- Evento 4: Fórum de Inovação em Saúde
+    ('049', 4), ('050', 4), ('001', 4), ('002', 4), ('003', 4), ('004', 4),
+    ('005', 4), ('006', 4), ('007', 4), ('008', 4), ('009', 4), ('010', 4),
+    ('011', 4), ('012', 4), ('013', 4), ('014', 4),
+    
+    -- Evento 5: Encontro de Liderança Empresarial
+    ('015', 5), ('016', 5), ('017', 5), ('018', 5), ('019', 5), ('020', 5),
+    ('021', 5), ('022', 5), ('023', 5), ('024', 5), ('025', 5), ('026', 5),
+    ('027', 5), ('028', 5), ('029', 5), ('030', 5),
+    
+    -- Evento 6: Conferência de Sustentabilidade Ambiental
+    ('031', 6), ('032', 6), ('033', 6), ('034', 6), ('035', 6), ('036', 6),
+    ('037', 6), ('038', 6), ('039', 6), ('040', 6), ('041', 6), ('042', 6),
+    ('043', 6), ('044', 6), ('045', 6), ('046', 6),
+    
+    -- Evento 7: Palestra sobre Empreendedorismo
+    ('047', 7), ('048', 7), ('049', 7), ('050', 7), ('001', 7), ('002', 7),
+    ('003', 7), ('004', 7), ('005', 7), ('006', 7), ('007', 7), ('008', 7),
+    ('009', 7), ('010', 7), ('011', 7), ('012', 7),
+    
+    -- Evento 8: Evento de Networking Corporativo
+    ('013', 8), ('014', 8), ('015', 8), ('016', 8), ('017', 8), ('018', 8),
+    ('019', 8), ('020', 8), ('021', 8), ('022', 8), ('023', 8), ('024', 8),
+    ('025', 8), ('026', 8), ('027', 8), ('028', 8),
+    
+    -- Evento 9: Exposição de Design e Inovação
+    ('029', 9), ('030', 9), ('031', 9), ('032', 9), ('033', 9), ('034', 9),
+    ('035', 9), ('036', 9), ('037', 9), ('038', 9), ('039', 9), ('040', 9),
+    ('041', 9), ('042', 9), ('043', 9), ('044', 9),
+    
+    -- Evento 10: Fórum de Inteligência Artificial
+    ('045', 10), ('046', 10), ('047', 10), ('048', 10), ('049', 10), ('050', 10),
+    ('001', 10), ('002', 10), ('003', 10), ('004', 10), ('005', 10), ('006', 10),
+    ('007', 10), ('008', 10), ('009', 10), ('010', 10),
+    
+    -- Evento 11: Seminário sobre Economia Global
+    ('011', 11), ('012', 11), ('013', 11), ('014', 11), ('015', 11), ('016', 11),
+    ('017', 11), ('018', 11), ('019', 11), ('020', 11), ('021', 11), ('022', 11),
+    ('023', 11), ('024', 11), ('025', 11), ('026', 11),
+    
+    -- Evento 12: Workshop de Programação e Desenvolvimento
+    ('027', 12), ('028', 12), ('029', 12), ('030', 12), ('031', 12), ('032', 12),
+    ('033', 12), ('034', 12), ('035', 12), ('036', 12), ('037', 12), ('038', 12),
+    ('039', 12), ('040', 12), ('041', 12), ('042', 12),
+    
+    -- Evento 13: Palestra sobre Mindfulness e Produtividade
+    ('043', 13), ('044', 13), ('045', 13), ('046', 13), ('047', 13), ('048', 13),
+    ('049', 13), ('050', 13), ('001', 13), ('002', 13), ('003', 13), ('004', 13),
+    ('005', 13), ('006', 13), ('007', 13), ('008', 13),
+    
+    -- Evento 14: Conferência Internacional de Vendas
+    ('009', 14), ('010', 14), ('011', 14), ('012', 14), ('013', 14), ('014', 14),
+    ('015', 14), ('016', 14), ('017', 14), ('018', 14), ('019', 14), ('020', 14),
+    ('021', 14), ('022', 14), ('023', 14), ('024', 14),
+    
+    -- Evento 15: Encontro de Profissionais de TI
+    ('025', 15), ('026', 15), ('027', 15), ('028', 15), ('029', 15), ('030', 15),
+    ('031', 15), ('032', 15), ('033', 15), ('034', 15), ('035', 15), ('036', 15),
+    ('037', 15), ('038', 15), ('039', 15), ('040', 15),
+    
+    -- Evento 16: Evento de Responsabilidade Social Corporativa
+    ('041', 16), ('042', 16), ('043', 16), ('044', 16), ('045', 16), ('046', 16),
+    ('047', 16), ('048', 16), ('049', 16), ('050', 16), ('001', 16), ('002', 16),
+    ('003', 16), ('004', 16), ('005', 16), ('006', 16),
+    
+    -- Evento 17: Fórum de Educação e Inovação
+    ('007', 17), ('008', 17), ('009', 17), ('010', 17), ('011', 17), ('012', 17),
+    ('013', 17), ('014', 17), ('015', 17), ('016', 17), ('017', 17), ('018', 17),
+    ('019', 17), ('020', 17), ('021', 17), ('022', 17),
+    
+    -- Evento 18: Seminário sobre Marketing de Influência
+    ('023', 18), ('024', 18), ('025', 18), ('026', 18), ('027', 18), ('028', 18),
+    ('029', 18), ('030', 18), ('031', 18), ('032', 18), ('033', 18), ('034', 18),
+    ('035', 18), ('036', 18), ('037', 18), ('038', 18),
+    
+    -- Evento 19: Encontro de Profissionais de Recursos Humanos
+    ('039', 19), ('040', 19), ('041', 19), ('042', 19), ('043', 19), ('044', 19),
+    ('045', 19), ('046', 19), ('047', 19), ('048', 19), ('049', 19), ('050', 19),
+    ('001', 19), ('002', 19), ('003', 19), ('004', 19),
+    
+    -- Evento 20: Workshop de Comunicação e Liderança
+    ('005', 20), ('006', 20), ('007', 20), ('008', 20), ('009', 20), ('010', 20),
+    ('011', 20), ('012', 20), ('013', 20), ('014', 20), ('015', 20), ('016', 20),
+    ('017', 20), ('018', 20), ('019', 20), ('020', 20);
+
+
+-- Tabela Reserva
+INSERT INTO Reserva (ID_evento, ID_estacao, CPF, Data, Pagamento) VALUES
+    -- Evento 1: Congresso de Tecnologia
+    (1, 1, '001', '2024-12-10', 1),
+    
+    -- Evento 2: Seminário de Marketing Digital
+    (2, 2, '002', '2024-12-11', 0),
+    
+    -- Evento 3: Workshop de Gestão de Projetos
+    (3, 3, '003', '2024-12-12', 1),
+    
+    -- Evento 4: Fórum de Inovação em Saúde
+    (4, 4, '004', '2024-12-13', 1),
+    
+    -- Evento 5: Encontro de Liderança Empresarial
+    (5, 5, '005', '2024-12-14', 0),
+    
+    -- Evento 6: Conferência de Sustentabilidade Ambiental
+    (6, 6, '006', '2024-12-15', 1),
+    
+    -- Evento 7: Palestra sobre Empreendedorismo
+    (7, 7, '007', '2024-12-16', 0),
+    
+    -- Evento 8: Evento de Networking Corporativo
+    (8, 8, '008', '2024-12-17', 1),
+    
+    -- Evento 9: Exposição de Design e Inovação
+    (9, 9, '009', '2024-12-18', 1),
+    
+    -- Evento 10: Fórum de Inteligência Artificial
+    (10, 10, '010', '2024-12-19', 1),
+    
+    -- Evento 11: Seminário sobre Economia Global
+    (11, 11, '011', '2024-12-20', 0),
+    
+    -- Evento 12: Workshop de Programação e Desenvolvimento
+    (12, 12, '012', '2024-12-21', 1),
+    
+    -- Evento 13: Palestra sobre Mindfulness e Produtividade
+    (13, 13, '013', '2024-12-22', 0),
+    
+    -- Evento 14: Conferência Internacional de Vendas
+    (14, 14, '014', '2024-12-23', 1),
+    
+    -- Evento 15: Encontro de Profissionais de TI
+    (15, 15, '015', '2024-12-24', 1),
+    
+    -- Evento 16: Evento de Responsabilidade Social Corporativa
+    (16, 16, '016', '2024-12-25', 0),
+    
+    -- Evento 17: Fórum de Educação e Inovação
+    (17, 17, '017', '2024-12-26', 1),
+    
+    -- Evento 18: Seminário sobre Marketing de Influência
+    (18, 18, '018', '2024-12-27', 1),
+    
+    -- Evento 19: Encontro de Profissionais de Recursos Humanos
+    (19, 19, '019', '2024-12-28', 0),
+    
+    -- Evento 20: Workshop de Comunicação e Liderança
+    (20, 20, '020', '2024-12-29', 1);
